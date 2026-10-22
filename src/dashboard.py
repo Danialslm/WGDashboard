@@ -1068,6 +1068,27 @@ def API_getConfigurationInfo():
         "configurationRestrictedPeers": WireguardConfigurations[configurationName].getRestrictedPeersList()
     })
 
+
+@app.get(f'{APP_PREFIX}/api/getPeerInfo/<configName>')
+def API_getPeerInfo(configName, peerID):
+    peerID = request.args.get("peerID")
+    if peerID is None:
+        return ResponseObject(False, "peerID query param is required", status_code=400)
+    
+    config = WireguardConfigurations.get(configName)
+    if config is None:
+        return ResponseObject(False, "Invalid Configuration Name")
+
+    peers = config.getPeersList()
+    peer = next((p for p in peers if p.id == peerID), None)
+    if peer is None:
+        return ResponseObject(False, f"Peer with id {peerID!r} not found", status_code=404)
+    
+    return ResponseObject(data={
+        "peerInfo": peer.toJson(),
+    })
+
+
 @app.get(f'{APP_PREFIX}/api/getPeerHistoricalEndpoints')
 def API_GetPeerHistoricalEndpoints():
     configurationName = request.args.get("configurationName")
