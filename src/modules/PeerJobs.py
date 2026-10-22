@@ -159,7 +159,7 @@ class PeerJobs:
                         y: float = float(job.Value)
                     else:
                         x: datetime = datetime.now()
-                        y: datetime = datetime.strptime(job.Value, "%Y-%m-%d %H:%M:%S")
+                        y: datetime = datetime.isoformat(job.Value)
                     runAction: bool = self.__runJob_Compare(x, y, job.Operator)
                     if runAction:
                         s = False
