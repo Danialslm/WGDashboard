@@ -1092,6 +1092,8 @@ class WireguardConfiguration:
         for p in self.Peers + self.getRestrictedPeersList():
             peerAllowedIP = p.allowed_ip.split(',')
             for pip in peerAllowedIP:
+                if pip == 'N/A':
+                    continue
                 ppip = pip.strip().split('/')
                 if len(ppip) == 2:
                     try:
@@ -1123,6 +1125,8 @@ class WireguardConfiguration:
         for p in self.Peers + self.getRestrictedPeersList():
             peerAllowedIP = p.allowed_ip.split(',')
             for pip in peerAllowedIP:
+                if pip == 'N/A':
+                    continue
                 ppip = pip.strip().split('/')
                 if len(ppip) == 2:
                     try:
