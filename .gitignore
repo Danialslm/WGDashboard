@@ -53,3 +53,8 @@ coverage
 
 *.tsbuildinfo
 .vite/*
+
+database
+data
+amneziawg
+wireguard
