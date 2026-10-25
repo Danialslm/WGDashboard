@@ -1070,7 +1070,7 @@ def API_getConfigurationInfo():
 
 
 @app.get(f'{APP_PREFIX}/api/getPeerInfo/<configName>')
-def API_getPeerInfo(configName, peerID):
+def API_getPeerInfo(configName):
     peerID = request.args.get("peerID")
     if peerID is None:
         return ResponseObject(False, "peerID query param is required", status_code=400)
@@ -1078,14 +1078,21 @@ def API_getPeerInfo(configName, peerID):
     config = WireguardConfigurations.get(configName)
     if config is None:
         return ResponseObject(False, "Invalid Configuration Name")
-
+    
     peers = config.getPeersList()
     peer = next((p for p in peers if p.id == peerID), None)
+    restricted = False
     if peer is None:
-        return ResponseObject(False, f"Peer with id {peerID!r} not found", status_code=404)
+        restricted_peers = config.getRestrictedPeersList()
+        peer = next((p for p in restricted_peers if p.id == peerID), None)
+        if peer is None:
+            return ResponseObject(False, f"Peer with id {peerID!r} not found", status_code=404)
+        
+        restricted = True
     
     return ResponseObject(data={
         "peerInfo": peer.toJson(),
+        "restricted": restricted,
     })
 
 
